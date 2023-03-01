@@ -38,7 +38,7 @@ After=network.target
 [Service]
 Type=simple
 ExecStart=/usr/bin/podman run --secret github_token --name runner --rm --privileged -e GH_OWNER='<your github id>' -e GH_REPOSITORY='<repo name>' -v <host dir>:<container dir> quay.io/jianzzha/runner:2.301.1
-ExecStop=/usr/bin/podman stop runner
+ExecStop=/usr/bin/podman stop runner; /usr/bin/podman rm -i runner
 
 [Install]
 WantedBy=multi-user.target
