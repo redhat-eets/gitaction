@@ -4,6 +4,7 @@ FROM ubuntu:20.04
 #input GitHub runner version argument
 ARG RUNNER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
+ENV GH_TOKEN_PATH=/run/secrets/github_token
 
 LABEL GitHub="https://github.com/redhat-eets/gitaction.git"
 LABEL BaseImage="ubuntu:20.04"
