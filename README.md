@@ -14,7 +14,9 @@ Set up a podman secret for the github access token,
 echo "your github access token" > token && podman secret create github_token token && rm -rf token
 ```
 
-In the above step, one must use `github_token` as the secret name, as this is the default secret file name that the container will look for. If one choose a different name in stead, then the enviroment variable ` GH_TOKEN_PATH` can be used to specify the secret file path when running podman to start the container.  
+In the above step, one must use `github_token` as the secret name, as this is the default secret file name that the container will look for. If one choose a different name instead, then the enviroment variable ` GH_TOKEN_PATH` can be used to specify the secret file path when running podman to start the container.  
+
+Prior to starting containerized runner make sure you have access to runner settings in your target repo: Settings -> Actions -> Runners. Otherwise runner registration will fail.
 
 To run the containerized runner with this podman secret,
 ```
