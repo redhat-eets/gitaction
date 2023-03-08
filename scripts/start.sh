@@ -1,5 +1,11 @@
 #!/bin/bash
 
+LABEL_OPT=""
+if [[ -n "${RUNNER_LABEL}" ]]; then
+    LABEL_OPT="--labels ${RUNNER_LABEL}"
+fi
+
+RUNNER_LABEL=${RUNNER_LABEL}
 GH_OWNER=$GH_OWNER
 GH_REPOSITORY=$GH_REPOSITORY
 
@@ -11,7 +17,7 @@ REG_TOKEN=$(curl -sX POST -H "Accept: application/vnd.github.v3+json" -H "Author
 
 cd /home/docker/actions-runner
 
-./config.sh --unattended --url https://github.com/${GH_OWNER}/${GH_REPOSITORY} --token ${REG_TOKEN} --name ${RUNNER_NAME}
+./config.sh --unattended --url https://github.com/${GH_OWNER}/${GH_REPOSITORY} --token ${REG_TOKEN} --name ${RUNNER_NAME} ${LABEL_OPT}
 
 cleanup() {
     echo "Removing runner..."

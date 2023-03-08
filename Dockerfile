@@ -17,6 +17,13 @@ RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 RUN apt-get install -y --no-install-recommends \
     curl nodejs wget unzip vim git azure-cli openssh-client jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
 
+# install gh tool
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+    | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update -y && apt-get install gh -y --no-install-recommends
+
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
     && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
