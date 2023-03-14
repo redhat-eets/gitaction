@@ -1,7 +1,7 @@
-# base image
+# Use ubuntu as base image as github action has better support for Ubuntu
 FROM ubuntu:20.04
 
-#input GitHub runner version argument
+# Input GitHub runner version argument, use --build-arg RUNNER_VERSION=<...> at image build time
 ARG RUNNER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GH_TOKEN_PATH=/run/secrets/github_token
@@ -10,27 +10,16 @@ LABEL GitHub="https://github.com/redhat-eets/gitaction.git"
 LABEL BaseImage="ubuntu:20.04"
 LABEL RunnerVersion=${RUNNER_VERSION}
 
-# update the base packages + add a non-sudo user
-RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
-
-# install the packages and dependencies along with jq so we can parse JSON (add additional packages as necessary)
-RUN apt-get install -y --no-install-recommends \
-    curl nodejs wget unzip vim git azure-cli openssh-client jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip
-
-# install gh tool
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-    | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && apt-get update -y && apt-get install gh -y --no-install-recommends
-
-# cd into the user directory, download and unzip the github actions runner
-RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
+# Update the base packages, add a non-sudo user, install the packages, dependencies
+RUN apt-get update -y && useradd -m docker \
+    && apt-get install -y --no-install-recommends \
+    curl git jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip \
+    && cd /home/docker && mkdir actions-runner && cd actions-runner \
     && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
-    && tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
-
-# install some additional dependencies
-RUN chown -R docker ~docker && /home/docker/actions-runner/bin/installdependencies.sh
+    && tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
+    && chown -R docker ~docker && /home/docker/actions-runner/bin/installdependencies.sh \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # add over the start.sh script
 ADD scripts/start.sh start.sh
