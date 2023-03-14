@@ -9,6 +9,8 @@ To build the containerized runner,
 podman build --build-arg RUNNER_VERSION=2.301.1 --tag quay.io/jianzzha/runner:2.301.1 .
 ```
 
+To see what runner releases are available to use for `RUNNER_VERSION`, check on https://github.com/actions/runner/releases
+
 Set up a podman secret for the github access token,
 ```
 echo "your github access token" > token && podman secret create github_token token && rm -rf token

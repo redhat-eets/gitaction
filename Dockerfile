@@ -1,7 +1,7 @@
-# base image
+# Use ubuntu as base image as github action has better support for Ubuntu
 FROM ubuntu:20.04
 
-#input GitHub runner version argument
+# Input GitHub runner version argument, use --build-arg RUNNER_VERSION=<...> at image build time
 ARG RUNNER_VERSION
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GH_TOKEN_PATH=/run/secrets/github_token
@@ -10,7 +10,7 @@ LABEL GitHub="https://github.com/redhat-eets/gitaction.git"
 LABEL BaseImage="ubuntu:20.04"
 LABEL RunnerVersion=${RUNNER_VERSION}
 
-# update the base packages, add a non-sudo user, install the packages, dependencies
+# Update the base packages, add a non-sudo user, install the packages, dependencies
 RUN apt-get update -y && useradd -m docker \
     && apt-get install -y --no-install-recommends \
     curl git jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev python3-pip \
