@@ -51,6 +51,69 @@ EOF
 systemctl enable runner --now
 ```
 
+## Runner in OpenShift
+
+Create secret for your github token,
+```
+kubectl create secret generic gh-token --from-literal=github_token=<your github token>
+```
+
+Create a folder and store the config.yaml and testbed.yaml in this folder,
+```
+$ls /home/jianzzha/sriov-testconfig
+config.yaml
+testbed.yaml
+```
+
+Create configuration from this folder,
+```
+oc create configmap test-config --from-file=/home/jianzzha/sriov-testconfig
+```
+
+Create deployment for the github runner, 
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runner-deployment
+  labels:
+    app: runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: runner
+  template:
+    metadata:
+      labels:
+        app: runner
+    spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: gh-token
+      - name: config-volume
+        configMap:
+          name: test-config
+      containers:
+      - name: runner
+        image: quay.io/jianzzha/runner:2.301.1
+        securityContext:
+          privileged: true
+        env:
+        - name: GH_OWNER
+          value: "redhat-partner-solutions"
+        - name: GH_REPOSITORY
+          value: "rhel-sriov-test"
+        volumeMounts:
+        - name: secret-volume
+          readOnly: true
+          mountPath: "/run/secrets"
+        - name: config-volume
+          mountPath: "/config"
+```
+
+
 
 
 
