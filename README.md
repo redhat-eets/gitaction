@@ -105,10 +105,12 @@ spec:
           value: "redhat-partner-solutions"
         - name: GH_REPOSITORY
           value: "rhel-sriov-test"
+        - name: GH_TOKEN_PATH
+          value: "/etc/gh_secrets/github_token"
         volumeMounts:
         - name: secret-volume
           readOnly: true
-          mountPath: "/run/secrets"
+          mountPath: "/etc/gh_secrets"
         - name: config-volume
           mountPath: "/config"
 ```
