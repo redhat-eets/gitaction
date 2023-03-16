@@ -1,6 +1,6 @@
 # gitaction
 
-This repository is used to collect the github action toolings, sample work flows and documentations.
+This repository is used to collect github action toolings, sample work flows and documentations.
 
 ## Runner in container
 
@@ -11,7 +11,7 @@ podman build --build-arg RUNNER_VERSION=2.301.1 --tag quay.io/jianzzha/runner:2.
 
 To see what runner releases are available to use for `RUNNER_VERSION`, check on https://github.com/actions/runner/releases
 
-Set up a podman secret for the github access token,
+Set up a podman secret for a github access token,
 ```
 echo "your github access token" > token && podman secret create github_token token && rm -rf token
 ```
@@ -20,7 +20,7 @@ In the above step, one must use `github_token` as the secret name, as this is th
 
 Prior to starting containerized runner make sure you have access to runner settings in your target repo: Settings -> Actions -> Runners. Otherwise runner registration will fail.
 
-To run the containerized runner with this podman secret,
+To run a containerized runner with this podman secret,
 ```
 podman run --secret github_token --name runner -it --rm --privileged -e GH_OWNER='<your github id>' -e GH_REPOSITORY='<repo name>' -v <host dir>:<container dir> quay.io/jianzzha/runner:2.301.1
 ```
@@ -31,6 +31,15 @@ As mentioned earlier, if a different podman secret name is created, then an extr
 ```
 -e GH_TOKEN_PATH=/run/secrets/<podman secret name>
 ```
+You can run more than one containerized runner on the same server using different labels. This is useful if different tests have different hardware requirements, for example 800-series and 700-series Intel NICs:
+
+```
+podman run --secret github_token --name runner810 -it --rm --privileged **-e RUNNER_LABEL='810'** -e GH_OWNER='<your github id>' -e GH_REPOSITORY='<repo name>' -v <host_config_dir_810>:<container_config_dir> quay.io/jianzzha/runner:2.301.1
+
+podman run --secret github_token --name runner710 -it --rm --privileged **-e RUNNER_LABEL='710'** -e GH_OWNER='<your github id>' -e GH_REPOSITORY='<repo name>' -v <host_config_dir_710>:<container_config_dir> quay.io/jianzzha/runner:2.301.1
+```
+You can refer to the runners above as ` runs-on: [self-hosted, 810] ` or  ` runs-on: [self-hosted, 710] ` in a GitHub workflow.
+
 
 To run the containerized runner as a systemd service,
 ```
