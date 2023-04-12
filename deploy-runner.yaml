@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runner-deployment
+  labels:
+    app: runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: runner
+  template:
+    metadata:
+      labels:
+        app: runner
+    spec:
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: gh-token
+      - name: config-volume
+        configMap:
+          name: test-config
+      containers:
+      - name: runner
+        image: quay.io/jianzzha/runner:2.301.1
+        securityContext:
+          privileged: true
+        env:
+        - name: GH_OWNER
+          value: "jianzzha"
+        - name: GH_REPOSITORY
+          value: "ci-play"
+        - name: GH_TOKEN_PATH
+          value: "/etc/gh_secrets/github_token"
+        volumeMounts:
+        - name: secret-volume
+          readOnly: true
+          mountPath: "/etc/gh_secrets"
+        - name: config-volume
+          mountPath: "/config"
