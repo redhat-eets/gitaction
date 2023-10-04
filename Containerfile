@@ -10,7 +10,7 @@ ARG GH_REPOSITORY=${GH_REPOSITORY}
 ARG GH_TOKEN=${GH_TOKEN}
 
 # Install prerequisites
-RUN dnf install dotnet-sdk-6.0 jq gcc make python3 docker podman -y
+RUN dnf install wget dotnet-sdk-6.0 jq gcc make python3 docker podman -y
 
 # Switch to build user
 USER build
