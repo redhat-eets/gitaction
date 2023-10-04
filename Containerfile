@@ -21,9 +21,8 @@ WORKDIR /home/build
 RUN wget -nv https://github.com/actions/runner/releases/download/v$RUNNER_VERSION/actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
 RUN tar xzf ./actions-runner-linux-x64-$RUNNER_VERSION.tar.gz
 
-# Add start script and set executable
+# Add start script
 ADD scripts/start.sh start.sh
-RUN chmod +x start.sh
 
 # Set entry point to our start script
 ENTRYPOINT ["./start.sh"]
