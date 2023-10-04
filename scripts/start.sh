@@ -20,7 +20,7 @@ reg_token () {
 
 REG_TOKEN=$(reg_token)
 
-cd /home/docker/actions-runner
+#cd ~/actions-runner
 
 ./config.sh --unattended --url https://github.com/${GH_OWNER}/${GH_REPOSITORY} --token ${REG_TOKEN} --name ${RUNNER_NAME} ${LABEL_OPT}
 
