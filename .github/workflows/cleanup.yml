@@ -12,7 +12,7 @@ jobs:
       - name: Delete old container
         uses: snok/container-retention-policy@v2.1.2
         with:
-          image-names: nvidia-*, akmods-*
+          image-names: buildah-*
           cut-off: 1 weeks ago UTC
           account-type: personal
           skip-tags: latest
@@ -21,7 +21,7 @@ jobs:
       - name: Delete pr containers
         uses: snok/container-retention-policy@v2.1.2
         with:
-          image-names: nvidia*, akmods*
+          image-names: buildah-*
           cut-off: 1 day ago UTC
           account-type: personal
           filter-tags: "pr-*"
